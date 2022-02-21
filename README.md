@@ -1,8 +1,8 @@
 # customizable_prop_info
 Prop Info for Garry's Mod
 
-Highly customizable for both the client and the server.
-Custom info entries can be made and pre-existing ones can be modified.
+Highly customizable for both the client and the server. \
+Custom info entries can be made and pre-existing ones can be modified. \
 All clientside settings can be found in the spawnmenu options tab.
 
 
@@ -56,7 +56,7 @@ Client:
     - `Strings = LIST_OF_STRINGS`
     - `Colors = LIST_OF_COLORS`
     - `ExtraInfo = OPTIONAL_EXTRA_INFO` - Any type of data (preferably a string-indexed table for modularity) to pass along useful info for recursive calls in `CustomPropInfo.AlterInfoEntry()`
-  - If your func only returns one string (or other non-nil, non-table value), it will get auto-converted to the table format and use the default text color, to make adding basic entries simpler.
+  - If `func` only returns one string (or other non-nil, non-table value), it will get auto-converted to the table format and use the default text color, to make adding basic entries simpler.
   - Unless `CanCallWithoutEnt` is true, you do not need to check for `IsValid( ent )`, as prop info is only acquired on valid entities. This also means that it will never acquire info on the world.
 - `CustomPropInfo.AlterInfoEntry( name, func )`
   - Wraps a pre-existing info entry to append, remove, or otherwise modify its output.
