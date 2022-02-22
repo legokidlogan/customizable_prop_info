@@ -447,7 +447,7 @@ local mathClamp = math.Clamp
 local roundAmount = GetConVar( CVAR_BASE .. "round" ):GetInt() or 3
 local displayTextAlpha = GetConVar( CVAR_BASE .. "text_alpha" ):GetFloat() or 255
 
-local function makeTransparent( color )
+local makeTransparent = CustomPropInfo.MakeTransparent or function( color )
     return Color( color.r, color.g, color.b, displayTextAlpha or 255 )
 end
 

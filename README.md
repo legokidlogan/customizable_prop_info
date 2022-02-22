@@ -35,6 +35,19 @@ All clientside settings can be found in the spawnmenu options tab.
 | custom_propinfo_command_prefix | The command prefix used for CPI chat commands. Cannot include whitespace characters. Max character length is 20. | /pi |
 
 
+## Misc.
+
+- Colors:
+  - All CPI colors can be found in `CustomPropInfo.Colors`, make sure to use them if you add or edit info entries.
+  - CPI modifies nearly all of its colors dynamically when the client changes their background/text alpha settings, be cautious when using its colors for something other than info entries/commands.
+    - It modifies the alpha directly without making a new color, so you *could* store the colors locally if you want, to avoid extra table lookups. However, it is still recommended to access the colors via table lookup anyway, as a custom script or addon could potentially override it with a new color object entirely.
+  - `CustomPropInfo.MakeOpaque( color )` and `CustomPropInfo.MakeTransparent( color )` return a copy of a color with its alpha set to 255 and `displayTextAlpha` respectively.
+  - Colors with a name starting with `Solid` will never have their alpha modified by `displayTextAlpha`
+  - If you want to change the color palette or expand it with additional colors for your server, simply modify/add to the `CustomPropInfo.Colors` table on the client.
+    - You could even add a config menu for the client to tweak the colors themselves if desired. CPI doesn't do that itself because it would quickly become cumbersome and bloat up the option panel.
+  - All base-addon colors can be found in `cl_entries.lua`
+
+
 ## Global Functions
 
 Client:

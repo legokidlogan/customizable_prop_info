@@ -113,10 +113,13 @@ local mathMax = math.max
 
 local stringSub = string.sub
 
-local function makeOpaque( color )
+function CustomPropInfo.MakeOpaque( color )
     return Color( color.r, color.g, color.b, 255 )
 end
 
+function CustomPropInfo.MakeTransparent( color )
+    return Color( color.r, color.g, color.b, displayTextAlpha or 255 )
+end
 
 function CustomPropInfo.SetBackgroundValue( value )
     value = value or displayBackgroundValue
@@ -167,6 +170,7 @@ function CustomPropInfo.SetTextAlpha( alpha )
     end
 end
 
+local makeOpaque = CustomPropInfo.MakeOpaque
 local setBackgroundValue = CustomPropInfo.SetBackgroundValue
 local setBackgroundAlpha = CustomPropInfo.SetBackgroundAlpha
 local setTextAlpha = CustomPropInfo.SetTextAlpha
