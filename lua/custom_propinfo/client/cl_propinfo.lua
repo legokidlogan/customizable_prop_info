@@ -57,6 +57,7 @@ local CPI_FIRST_USE = CreateClientConVar( CVAR_BASE .. "first_use", 1, true, fal
 local CPI_ENABLED = createClientConVarCPI( "enabled", 1, true, false, "Enables CustomPropInfo.", 0, 1 )
 local CPI_DIR_ENABLED = createClientConVarCPI( "directions", 0, true, false, "Enables directional arrows for entities. Red for forward, green for right, blue for up.", 0, 1 )
 local CPI_DIR_MODE = createClientConVarCPI( "directions_mode", 0, true, false, "Changes display mode for the green line of directional arrows. 0 = 'right' direction, 1 = y-axis direction for local coordinates.", 0, 1 )
+local CPI_TOOL_ONLY = createClientConVarCPI( "tool_only", 0, true, false, "Makes CPI only display while you are actively holding the physgun or toolgun.", 0, 1 )
 local CPI_ROUND = createClientConVarCPI( "round", 3, true, false, "How many decimal points to round numbers to.", 0, 10 )
 local CPI_INTERVAL = createClientConVarCPI( "update_interval", 0.5, true, false, "The time, in seconds, between each update for CPI.", 0.05, 3 )
 local CPI_OUTLINE = createClientConVarCPI( "outline", 0, true, false, "Enables an outline for text readability.", 0, 1 )
@@ -75,6 +76,7 @@ local cpiEntity = false
 local cpiEnabled = CPI_ENABLED:GetBool()
 local cpiDirEnabled = CPI_DIR_ENABLED:GetBool()
 local cpiDirMode = CPI_DIR_MODE:GetBool()
+local cpiToolOnly = CPI_TOOL_ONLY:GetBool()
 local cpiInterval = CPI_INTERVAL:GetFloat()
 local displayOutline = CPI_OUTLINE:GetBool()
 local cpiDirLength = CPI_DIR_LENGTH:GetFloat()
@@ -187,6 +189,10 @@ end )
 
 cvars.AddChangeCallback( CVAR_BASE .. "directions_mode", function( _, old, new )
     cpiDirMode = ( tonumber( new ) or 0 ) ~= 0
+end )
+
+cvars.AddChangeCallback( CVAR_BASE .. "tool_only", function( _, old, new )
+    cpiToolOnly = ( tonumber( new ) or 0 ) ~= 0
 end )
 
 cvars.AddChangeCallback( CVAR_BASE .. "directions_length", function( _, old, new )
@@ -528,9 +534,20 @@ end )
 
 local getPropInfo = CustomPropInfo.GetPropInfo
 
-local function startInfoTimer()
+function CustomPropInfo.StartInfoTimer()
     timer.Create( "CustomPropInfo_EntityCheck", cpiInterval, 0, function()
         if not cpiEnabled then return end
+
+        if cpiToolOnly then
+            local wep = LocalPlayer():GetActiveWeapon()
+            local class = IsValid( wep ) and wep:GetClass() or ""
+
+            if class ~= "weapon_physgun" and class ~= "gmod_tool" then
+                getPropInfo( NULL )
+
+                return
+            end
+        end
 
         local ent = ( LocalPlayer():GetEyeTrace() or {} ).Entity
 
@@ -546,7 +563,7 @@ hook.Add( "InitPostEntity", "CustomPropInfo_Init", function()
 
     timer.Simple( 10, function()
         checkServerPresence() -- Just in case
-        startInfoTimer()
+        CustomPropInfo.StartInfoTimer()
 
         if CustomPropInfo.ServerExists then
             net.Start( "CustomPropInfo_SetCommandPrefix" )
@@ -570,7 +587,7 @@ cvars.AddChangeCallback( CVAR_BASE .. "update_interval", function( _, old, new )
 
     cpiInterval = newVal
 
-    startInfoTimer()
+    CustomPropInfo.StartInfoTimer()
 end )
 
 if not CPI_FIRST_USE:GetBool() then return end

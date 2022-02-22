@@ -185,6 +185,7 @@ hook.Add( "PopulateToolMenu", "CustomPropInfo_PopulateToolMenu", function()
         panel:CheckBox( "Enable directional arrows", CVAR_BASE .. "directions" )
         panel:CheckBox( "Set dir. mode (right vs y-axis)", CVAR_BASE .. "directions_mode" )
         panel:CheckBox( "Enable text outline for improved readability", CVAR_BASE .. "outline" )
+        panel:CheckBox( "Only display if holding physgun or toolgun", CVAR_BASE .. "tool_only" )
 
         local infoPanelDir = vgui.Create( "DLabel" )
 
