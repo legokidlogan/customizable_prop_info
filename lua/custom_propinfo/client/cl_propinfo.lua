@@ -6,6 +6,7 @@ CustomPropInfo.RequestCache = CustomPropInfo.RequestCache or {}
 CustomPropInfo.Commands = CustomPropInfo.Commands or {}
 CustomPropInfo.ClientConVars = CustomPropInfo.ClientConVars or {}
 CustomPropInfo.ClientConVarsEntries = CustomPropInfo.ClientConVarsEntries or {}
+CustomPropInfo.CPPIBuddies = CustomPropInfo.CPPIBuddies or {}
 CustomPropInfo.ServerExists = false
 
 
@@ -14,6 +15,7 @@ local infoColors = CustomPropInfo.Colors
 local infoDisplayData = CustomPropInfo.DisplayData
 local infoRequestCache = CustomPropInfo.RequestCache
 local infoCommands = CustomPropInfo.Commands
+local infoBuddies = CustomPropInfo.CPPIBuddies
 local clConVars = CustomPropInfo.ClientConVars
 local convarFlags = { FCVAR_ARCHIVE, FCVAR_REPLICATED }
 
@@ -507,6 +509,17 @@ net.Receive( "CustomPropInfo_RunCommand", function()
     )
 end )
 
+net.Receive( "CustomPropInfo_InformClientsOfBuddies", function()
+    infoBuddies[net.ReadEntity()] = net.ReadTable()
+end )
+
+net.Receive( "CustomPropInfo_InformClientsOfBuddiesGroup", function()
+    local buddyGroups = net.readTable()
+
+    for ply, buddies in pairs( buddyGroups ) do
+        infoBuddies[ply] = buddies
+    end
+end )
 
 local getPropInfo = CustomPropInfo.GetPropInfo
 

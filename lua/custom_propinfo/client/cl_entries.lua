@@ -6,13 +6,15 @@ CustomPropInfo.ClientConVars = CustomPropInfo.ClientConVars or {}
 CustomPropInfo.ClientConVarsEntries = CustomPropInfo.ClientConVarsEntries or {}
 CustomPropInfo.RequestCache = CustomPropInfo.RequestCache or {}
 CustomPropInfo.Commands = CustomPropInfo.Commands or {}
+CustomPropInfo.CPPIBuddies = CustomPropInfo.CPPIBuddies or {}
 
 local infoEntries = CustomPropInfo.Entries
 local infoEntryLookup = CustomPropInfo.EntryLookup
 local infoColors = CustomPropInfo.Colors
 local infoRequestCache = CustomPropInfo.RequestCache
-local clConVarsEntries = CustomPropInfo.ClientConVarsEntries
 local infoCommands = CustomPropInfo.Commands
+local infoBuddies = CustomPropInfo.CPPIBuddies
+local clConVarsEntries = CustomPropInfo.ClientConVarsEntries
 
 local CVAR_BASE = "custom_propinfo_"
 local DEFAULT_TEXT = "???"
@@ -343,9 +345,13 @@ function CustomPropInfo.PlayerTrusts( owner, ply )
     if owner == ply or ply:IsSuperAdmin() then return 2 end
     if not IsValid( owner ) then return false end
 
-    local friends = owner.CPPIGetFriends and owner:CPPIGetFriends() or false
+    local friends = owner.CPPIGetFriends and owner:CPPIGetFriends()
 
-    if type( friends ) ~= "table" then return false end
+    if type( friends ) ~= "table" then
+        friends = infoBuddies[owner]
+    end
+
+    if not friends then return false end
 
     for _, friend in pairs( friends ) do
         if ply == friend then return 1 end

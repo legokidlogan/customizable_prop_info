@@ -4,6 +4,8 @@ CustomPropInfo.RequestResponses = CustomPropInfo.RequestResponses or {}
 
 local convarFlags = { FCVAR_ARCHIVE, FCVAR_REPLICATED }
 local CVAR_BASE = "custom_propinfo_"
+local HOOK_INFORM_BUDDIES = "CustomPropInfo_InformClientsOfBuddies"
+local HOOK_INFORM_BUDDIES_GROUP = "CustomPropInfo_InformClientsOfBuddiesGroup"
 
 local REQUEST_COOLDOWN = CreateConVar( CVAR_BASE .. "request_cooldown_default", 0.3, convarFlags, "Sets the default serverside cooldown for CPI info requests.", 0, 5 )
 local WELCOME_ENABLED = CreateConVar( CVAR_BASE .. "welcome_message_enabled", 1, convarFlags, "Whether or not new users will receive a welcome message on their first-ever join.", 0, 1 )
@@ -17,6 +19,8 @@ util.AddNetworkString( "CustomPropInfo_RequestInfo" )
 util.AddNetworkString( "CustomPropInfo_RequestResponse" )
 util.AddNetworkString( "CustomPropInfo_SetCommandPrefix" )
 util.AddNetworkString( "CustomPropInfo_RunCommand" )
+util.AddNetworkString( HOOK_INFORM_BUDDIES )
+util.AddNetworkString( HOOK_INFORM_BUDDIES_GROUP )
 
 
 
@@ -65,7 +69,50 @@ function CustomPropInfo.RegisterRequestResponse( entryName, uniqueID, func, svCo
     return true
 end
 
+hook.Add( "CPPIFriendsChanged", HOOK_INFORM_BUDDIES, function( ply, buddies )
+    if not IsValid( ply ) then return end
 
+    net.Start( HOOK_INFORM_BUDDIES )
+    net.WriteEntity( ply )
+    net.WriteTable( type( buddies ) == "table" and buddies or {} )
+    net.Broadcast()
+end )
+
+hook.Add( "PlayerInitialSpawn", HOOK_INFORM_BUDDIES, function( ply )
+    hook.Add( "SetupMove", HOOK_INFORM_BUDDIES, function( ply2, _, cmd )
+        if ply ~= ply2 or cmd:IsForced() then return end
+
+        hook.Remove( "SetupMove", HOOK_INFORM_BUDDIES )
+
+        timer.Simple( 10, function()
+            local plyBuddies = ply:CPPIGetFriends()
+            local plys = player.GetHumans()
+            local buddyGroups = {}
+
+            plyBuddies = type( plyBuddies ) == "table" and plyBuddies or {}
+
+            net.Start( HOOK_INFORM_BUDDIES )
+            net.WriteEntity( ply )
+            net.WriteTable( plyBuddies )
+            net.Broadcast()
+
+            for i = 1, #plys do
+                local otherPly = plys[i]
+
+                if otherPly ~= ply then
+                    local buddies = otherPly:CPPIGetFriends()
+                    buddies = type( buddies ) == "table" and buddies or {}
+
+                    buddyGroups[otherPly] = buddies
+                end
+            end
+
+            net.Start( HOOK_INFORM_BUDDIES_GROUP )
+            net.WriteTable( buddyGroups )
+            net.Send( ply )
+        end )
+    end )
+end )
 
 hook.Add( "PlayerSay", "CustomPropInfo_RunCommand", function( ply, msg )
     local prefix = infoPrefixes[ply] or "/pi"
