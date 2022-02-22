@@ -71,6 +71,8 @@ local CPI_POS_Y = createClientConVarCPI( "pos_y", 0.51, true, false, "Y position
 local CPI_FONT_SIZE = createClientConVarCPI( "font_size", 21, true, false, "Font size for the CPI display, in pixels. Determines overall display size.", 8, 50 )
 local CPI_MIN_WIDTH = createClientConVarCPI( "min_width", 20, true, false, "Minimum width of the CPI display background, scaled by the font size.", 0, 200 )
 local CPI_PREFIX = createClientConVarCPI( "command_prefix", "/pi", true, false, "The command prefix used for CPI chat commands. Cannot include whitespace characters. Max character length is " .. COMMAND_PREFIX_MAX_LENGTH .. "." )
+local CPI_FLAG_FROZEN = createClientConVarCPI( "flag_frozen", 0, true, false, "Makes frozen status into a flag, only showing when an object is frozen.", 0, 1 )
+local CPI_FLAG_COLLISIONS = createClientConVarCPI( "flag_collisions", 0, true, false, "Makes collision status into a flag, only showing when an object has collisions disabled.", 0, 1 )
 
 local cpiEntity = false
 local cpiEnabled = CPI_ENABLED:GetBool()

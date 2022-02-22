@@ -446,6 +446,8 @@ local mathClamp = math.Clamp
 
 local roundAmount = GetConVar( CVAR_BASE .. "round" ):GetInt() or 3
 local displayTextAlpha = GetConVar( CVAR_BASE .. "text_alpha" ):GetFloat() or 255
+local flagFrozen = GetConVar( CVAR_BASE .. "flag_frozen" ):GetBool()
+local flagCollisions = GetConVar( CVAR_BASE .. "flag_collisions" ):GetBool()
 
 local makeTransparent = CustomPropInfo.MakeTransparent or function( color )
     return Color( color.r, color.g, color.b, displayTextAlpha or 255 )
@@ -485,6 +487,14 @@ end )
 cvars.AddChangeCallback( CVAR_BASE .. "text_alpha", function( _, old, new )
     displayTextAlpha = mathClamp( tonumber( new ) or 255, 0, 255 )
     DEFAULT_COLOR.a = displayTextAlpha
+end )
+
+cvars.AddChangeCallback( CVAR_BASE .. "flag_frozen", function( _, old, new )
+    flagFrozen = ( tonumber( new ) or 0 ) ~= 0
+end )
+
+cvars.AddChangeCallback( CVAR_BASE .. "flag_collisions", function( _, old, new )
+    flagCollisions = ( tonumber( new ) or 0 ) ~= 0
 end )
 
 
@@ -845,6 +855,8 @@ registerEntry( "Frozen: ", function( ent ) -- Uses a server request
     if ent:IsPlayer() then
         local frozen = ent:IsFrozen()
 
+        if flagFrozen and not frozen then return end
+
         return {
             Strings = { frozen and "true" or "false" },
             Colors = { frozen and infoColors.Green or infoColors.Red },
@@ -864,6 +876,8 @@ registerEntry( "Frozen: ", function( ent ) -- Uses a server request
         end
 
         local frozen = data.Frozen
+
+        if flagFrozen and not frozen then return end
 
         return {
             Strings = { frozen and "true" or "false" },
@@ -887,6 +901,8 @@ end,
 
 registerEntry( "Collisions: ", function( ent )
     local collided = ent:GetCollisionGroup() ~= COLLISION_GROUP_WORLD
+
+    if flagCollisions and collided then return end
 
     return {
         Strings = { collided and "true" or "false" },

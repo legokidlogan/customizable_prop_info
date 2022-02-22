@@ -285,6 +285,21 @@ hook.Add( "PopulateToolMenu", "CustomPropInfo_PopulateToolMenu", function()
             },
         } ) )
 
+
+        panel:AddItem( createCollapsibleSliders( panel, "Additional Entry Settings", {
+            {
+                Text = "Frozen Flag: only show when frozen",
+                Toggle = true,
+                ConVar = CVAR_BASE .. "flag_frozen",
+            },
+            {
+                Text = "Collisions Flag: only show when collisionless",
+                Toggle = true,
+                ConVar = CVAR_BASE .. "flag_collisions",
+            }
+        } ) )
+
+
         local togglesPanel = createCollapsibleSliders( panel, "Entry Toggles", generateCollapsibleEntryData() )
 
         CustomPropInfo.TogglesPanel = togglesPanel
