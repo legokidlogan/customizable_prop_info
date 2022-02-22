@@ -184,7 +184,7 @@ hook.Add( "PopulateToolMenu", "CustomPropInfo_PopulateToolMenu", function()
         panel:CheckBox( "Enable prop info", CVAR_BASE .. "enabled" )
         panel:CheckBox( "Enable directional arrows", CVAR_BASE .. "directions" )
         panel:CheckBox( "Set dir. mode (right vs y-axis)", CVAR_BASE .. "directions_mode" )
-        panel:CheckBox( "Enable text outline", CVAR_BASE .. "outline" )
+        panel:CheckBox( "Enable text outline for improved readability", CVAR_BASE .. "outline" )
 
         local infoPanelDir = vgui.Create( "DLabel" )
 

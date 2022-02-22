@@ -25,12 +25,12 @@ All clientside settings can be found in the spawnmenu options tab.
 | custom_propinfo_outline | Enables an outline for text readability. | 0 |
 | custom_propinfo_directions_length | The length of CPI directional arrows. | 10 |
 | custom_propinfo_directions_length_end | The back-facing length of CPI directional arrows. | 3 |
-| custom_propinfo_background_value | The brightness of the CPI display background. | 120 |
-| custom_propinfo_background_alpha | The opacity of the CPI display background. | 50 |
+| custom_propinfo_background_value | The brightness of the CPI display background. | 40 |
+| custom_propinfo_background_alpha | The opacity of the CPI display background. | 80 |
 | custom_propinfo_text_alpha | The opacity of the CPI display text. | 255 |
 | custom_propinfo_pos_x | X position of the leftmost corner of the CPI display, as a fraction of the screen. 0 is the left, 1 is the right. | 0 |
 | custom_propinfo_pos_y | Y position of the leftmost corner of the CPI display, as a fraction of the screen. 0 is the top, 1 is the bottom. | 0.51 |
-| custom_propinfo_font_size | Font size for the CPI display, in pixels. Determines overall display size. | 20 |
+| custom_propinfo_font_size | Font size for the CPI display, in pixels. Determines overall display size. | 21 |
 | custom_propinfo_min_width | Minimum width of the CPI display background, scaled by the font size. | 20 |
 | custom_propinfo_command_prefix | The command prefix used for CPI chat commands. Cannot include whitespace characters. Max character length is 20. | /pi |
 

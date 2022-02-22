@@ -39,7 +39,7 @@ infoColors.SoftYellow = infoColors.SoftYellow or Color( 255, 255, 140 )
 infoColors.SoftOrange = infoColors.SoftOrange or Color( 255, 190, 100 )
 infoColors.PaleRed = infoColors.PaleRed or Color( 255, 200, 187 )
 infoColors.PvP = infoColors.PvP or Color( 255, 80, 80 )
-infoColors.Build = infoColors.Build or Color( 80, 80, 255 )
+infoColors.Build = infoColors.Build or Color( 80, 100, 255 )
 
 -- The Background color and any color with a name starting with "Solid" will not have their alpha modified by the custom_propinfo_text_alpha convar
 infoColors.SolidRed = infoColors.SolidRed or Color( 255, 0, 0 )
@@ -797,7 +797,7 @@ registerEntry( "Weapon: ", function( ent )
 
     return {
         Strings = { tostring( wep ) },
-        Colors = { infoColors.SoftBlue },
+        Colors = { infoColors.Orange },
     }
 end,
 {
