@@ -451,7 +451,7 @@ local function makeTransparent( color )
 end
 
 local function getOBBSize( ent )
-    return ent:OBBMins() - ent:OBBMaxs()
+    return ent:OBBMaxs() - ent:OBBMins()
 end
 
 local function getTeamColor( ply )
