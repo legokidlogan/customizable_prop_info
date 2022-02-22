@@ -518,7 +518,7 @@ net.Receive( "CustomPropInfo_InformClientsOfBuddies", function()
 end )
 
 net.Receive( "CustomPropInfo_InformClientsOfBuddiesGroup", function()
-    local buddyGroups = net.readTable()
+    local buddyGroups = net.ReadTable()
 
     for ply, buddies in pairs( buddyGroups ) do
         infoBuddies[ply] = buddies
