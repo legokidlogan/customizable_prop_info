@@ -50,6 +50,7 @@ checkServerPresence()
 
 local REQUEST_COOLDOWN = CreateConVar( CVAR_BASE .. "request_cooldown_default", 0.3, convarFlags, "Sets the default serverside cooldown for CPI info requests.", 0, 5 ) -- Replicated for visibility
 local WELCOME_ENABLED = CreateConVar( CVAR_BASE .. "welcome_message_enabled", 1, convarFlags, "Whether or not new users will receive a welcome message on their first-ever join.", 0, 1 )
+local ENABLED_DEFAULT = CreateConVar( CVAR_BASE .. "enabled_default", 1, convarFlags, "Whether or not new users who've never used this addon before should have CPI enabled by default.", 0, 1 )
 
 local CPI_FIRST_USE = CreateClientConVar( CVAR_BASE .. "first_use", 1, true, false, "Whether or not to print welcome text. Disables itself automatically.", 0, 1 )
 
@@ -572,13 +573,14 @@ cvars.AddChangeCallback( CVAR_BASE .. "update_interval", function( _, old, new )
     startInfoTimer()
 end )
 
-
-if not WELCOME_ENABLED:GetBool() then return end
 if not CPI_FIRST_USE:GetBool() then return end
 
 local function doIntroMessage()
-    if not CPI_FIRST_USE:GetBool() then
+    LocalPlayer():ConCommand( CVAR_BASE .. "enabled " .. ENABLED_DEFAULT:GetString() )
+
+    if not WELCOME_ENABLED:GetBool() then
         hook.Remove( "StartChat", "CustomPropInfo_IntroMessage" )
+        hook.Remove( "KeyPress", "CustomPropInfo_IntroMessage" )
 
         return
     end

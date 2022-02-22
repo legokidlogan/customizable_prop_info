@@ -9,6 +9,7 @@ local HOOK_INFORM_BUDDIES_GROUP = "CustomPropInfo_InformClientsOfBuddiesGroup"
 
 local REQUEST_COOLDOWN = CreateConVar( CVAR_BASE .. "request_cooldown_default", 0.3, convarFlags, "Sets the default serverside cooldown for CPI info requests.", 0, 5 )
 local WELCOME_ENABLED = CreateConVar( CVAR_BASE .. "welcome_message_enabled", 1, convarFlags, "Whether or not new users will receive a welcome message on their first-ever join.", 0, 1 )
+local ENABLED_DEFAULT = CreateConVar( CVAR_BASE .. "enabled_default", 1, convarFlags, "Whether or not new users who've never used this addon before should have CPI enabled by default. Set to 0 if new users are easily bothered by large HUD changes.", 0, 1 )
 
 
 local infoPrefixes = CustomPropInfo.CommandPrefixes

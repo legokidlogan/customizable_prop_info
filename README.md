@@ -12,6 +12,7 @@ All clientside settings can be found in the spawnmenu options tab.
 | :---: | :---: | :---: |
 | custom_propinfo_request_cooldown_default | Sets the default serverside cooldown for CPI info requests. | 0.3 |
 | custom_propinfo_welcome_message_enabled | Whether or not new users will receive a welcome message on their first-ever join. | 1 |
+| custom_propinfo_enabled_default | Whether or not new users who've never used this addon before should have CPI enabled by default. Set to 0 if new users are easily bothered by large HUD changes. | 1 |
 
 ## Client Convars
 
