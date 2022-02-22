@@ -21,7 +21,7 @@ All clientside settings can be found in the spawnmenu options tab.
 | custom_propinfo_enabled | Enables CustomPropInfo. | 1 |
 | custom_propinfo_directions | Enables directional arrows for entities. Red for forward, green for right, blue for up. | 0 |
 | custom_propinfo_directions_mode | Changes display mode for the green line of directional arrows. 0 = 'right' direction, 1 = y-axis direction for local coordinates. | 0 |
-| custom_propinfo_tool_only | Makes CPI only display while you are actively holding the physgun or toolgun. | 0 |
+| custom_propinfo_tool_only | Makes CPI only display while you are actively holding the physgun or toolgun. | 1 |
 | custom_propinfo_round | How many decimal points to round numbers to. | 3 |
 | custom_propinfo_update_interval | The time, in seconds, between each update for CPI. | 0.5 |
 | custom_propinfo_outline | Enables an outline for text readability. | 0 |
