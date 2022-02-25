@@ -58,6 +58,7 @@ local CPI_ENABLED = createClientConVarCPI( "enabled", 1, true, false, "Enables C
 local CPI_DIR_ENABLED = createClientConVarCPI( "directions", 0, true, false, "Enables directional arrows for entities. Red for forward, green for right, blue for up.", 0, 1 )
 local CPI_DIR_MODE = createClientConVarCPI( "directions_mode", 0, true, false, "Changes display mode for the green line of directional arrows. 0 = 'right' direction, 1 = y-axis direction for local coordinates.", 0, 1 )
 local CPI_TOOL_ONLY = createClientConVarCPI( "tool_only", 1, true, false, "Makes CPI only display while you are actively holding the physgun or toolgun.", 0, 1 )
+local CPI_HIDE_SEAT = createClientConVarCPI( "hide_seat", 1, true, false, "Hide CPI while sitting in a seat.", 0, 1 )
 local CPI_ROUND = createClientConVarCPI( "round", 3, true, false, "How many decimal points to round numbers to.", 0, 10 )
 local CPI_INTERVAL = createClientConVarCPI( "update_interval", 0.5, true, false, "The time, in seconds, between each update for CPI.", 0.05, 3 )
 local CPI_OUTLINE = createClientConVarCPI( "outline", 0, true, false, "Enables an outline for text readability.", 0, 1 )
@@ -79,6 +80,7 @@ local cpiEnabled = CPI_ENABLED:GetBool()
 local cpiDirEnabled = CPI_DIR_ENABLED:GetBool()
 local cpiDirMode = CPI_DIR_MODE:GetBool()
 local cpiToolOnly = CPI_TOOL_ONLY:GetBool()
+local cpiHideSeat = CPI_HIDE_SEAT:GetBool()
 local cpiInterval = CPI_INTERVAL:GetFloat()
 local displayOutline = CPI_OUTLINE:GetBool()
 local cpiDirLength = CPI_DIR_LENGTH:GetFloat()
@@ -195,6 +197,10 @@ end )
 
 cvars.AddChangeCallback( CVAR_BASE .. "tool_only", function( _, old, new )
     cpiToolOnly = ( tonumber( new ) or 0 ) ~= 0
+end )
+
+cvars.AddChangeCallback( CVAR_BASE .. "hide_seat", function( _, old, new )
+    cpiHideSeat = ( tonumber( new ) or 0 ) ~= 0
 end )
 
 cvars.AddChangeCallback( CVAR_BASE .. "directions_length", function( _, old, new )
@@ -549,6 +555,12 @@ function CustomPropInfo.StartInfoTimer()
 
                 return
             end
+        end
+
+        if cpiHideSeat and LocalPlayer():InVehicle() then
+            getPropInfo( NULL )
+
+            return
         end
 
         local ent = ( LocalPlayer():GetEyeTrace() or {} ).Entity
