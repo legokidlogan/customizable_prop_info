@@ -608,6 +608,7 @@ if not CPI_FIRST_USE:GetBool() then return end
 
 local function doIntroMessage()
     LocalPlayer():ConCommand( CVAR_BASE .. "enabled " .. ENABLED_DEFAULT:GetString() )
+    LocalPlayer():ConCommand( CVAR_BASE .. "first_use 0" )
 
     if not WELCOME_ENABLED:GetBool() then
         hook.Remove( "StartChat", "CustomPropInfo_IntroMessage" )
@@ -635,8 +636,6 @@ local function doIntroMessage()
         makeOpaque( infoColors.SoftYellow ), ") ",
         color_white, "to toggle it and other features. This is a one-time message and will not appear again."
     )
-
-    LocalPlayer():ConCommand( CVAR_BASE .. "first_use 0" )
 
     hook.Remove( "StartChat", "CustomPropInfo_IntroMessage" )
     hook.Remove( "KeyPress", "CustomPropInfo_IntroMessage" )
