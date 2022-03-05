@@ -80,6 +80,8 @@ hook.Add( "CPPIFriendsChanged", HOOK_INFORM_BUDDIES, function( ply, buddies )
 end )
 
 hook.Add( "PlayerInitialSpawn", HOOK_INFORM_BUDDIES, function( ply )
+    if not CPPI then return end
+
     hook.Add( "SetupMove", HOOK_INFORM_BUDDIES, function( ply2, _, cmd )
         if ply ~= ply2 or cmd:IsForced() then return end
 
