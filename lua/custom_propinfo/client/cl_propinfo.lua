@@ -185,6 +185,10 @@ local setTextAlpha = CustomPropInfo.SetTextAlpha
 
 cvars.AddChangeCallback( CVAR_BASE .. "enabled", function( _, old, new )
     cpiEnabled = ( tonumber( new ) or 0 ) ~= 0
+
+    if not cpiEnabled then
+        CustomPropInfo.GetPropInfo( NULL )
+    end
 end )
 
 cvars.AddChangeCallback( CVAR_BASE .. "directions", function( _, old, new )
