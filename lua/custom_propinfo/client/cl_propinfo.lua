@@ -112,7 +112,28 @@ local FONT_DATA = {
     outline = false,
 }
 
-surface.CreateFont( FONT_NAME, FONT_DATA )
+do
+    -- I would generalize this so players can set their own font, but CreateFont looks for font names, not font file names
+    --   and GMod doesn't have any tools for finding valid fonts, meaning I'd have to file.Read a ton of stuff which is absurd
+    if not file.Exists( "resource/fonts/RobotoMono.ttf", "MOD" ) then
+        local files, folders = file.Find( "resource/fonts/*", "THIRDPARTY" )
+        local robotoExists = false
+
+        for _, v in ipairs( files ) do
+            if v == "RobotoMono.ttf" then
+                robotoExists = true
+
+                break
+            end
+        end
+
+        if not robotoExists then
+            FONT_DATA.font = "Verdana" -- Sadly the only default monospace font is Courier New, which doesn't look good for CPI
+        end
+    end
+
+    surface.CreateFont( FONT_NAME, FONT_DATA )
+end
 
 
 local mathClamp = math.Clamp
