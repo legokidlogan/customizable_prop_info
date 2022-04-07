@@ -20,6 +20,7 @@ local gFPP = FPP
 local gFPP_Settings
 local fppAdminsArePrivileged
 local fppConvarDontTouchOtherPlayerProps
+local isValid = IsValid
 
 local CVAR_BASE = "custom_propinfo_"
 local DEFAULT_TEXT = "???"
@@ -335,7 +336,7 @@ function CustomPropInfo.RequestServerInfo( ent, entryName, uniqueID, clCooldown 
 
     if not coolTime or curTime > coolTime then
         net.Start( "CustomPropInfo_RequestInfo" )
-        net.WriteEntity( IsValid( ent ) and ent or NULL )
+        net.WriteEntity( isValid( ent ) and ent or NULL )
         net.WriteString( entryName )
         net.WriteString( uniqueID )
         net.SendToServer()
@@ -360,8 +361,8 @@ end
         2 <- yes, by technicality (owner == ply, or ply is superadmin)
 --]]
 function CustomPropInfo.PlayerTrusts( owner, ply )
-    if not IsValid( ply ) or not ply:IsPlayer() then return false end
-    if not IsValid( owner ) then return false end
+    if not isValid( ply ) or not ply:IsPlayer() then return false end
+    if not isValid( owner ) then return false end
     if owner == ply then return 2 end
 
     local isPlyAdmin = false
@@ -585,7 +586,7 @@ registerEntry( "Owner: ", function( ent )
     if ent:IsPlayer() then return end
 
     local owner = ent.CPPIGetOwner and ent:CPPIGetOwner() or ent:GetOwner()
-    local ownerIsAPlayer = IsValid( owner ) and owner:IsPlayer()
+    local ownerIsAPlayer = isValid( owner ) and owner:IsPlayer()
 
     return {
         Strings = { ownerIsAPlayer and tostring( owner ) or "None" },
@@ -611,7 +612,7 @@ registerEntry( "CPPI: ", function( ent ) -- Extra prop-protection info, if CPPI 
     else
         ply = ent.CPPIGetOwner and ent:CPPIGetOwner() or ent:GetOwner()
 
-        if not IsValid( ply ) then return end
+        if not isValid( ply ) then return end
     end
 
     local locPly = LocalPlayer()
@@ -829,7 +830,7 @@ registerEntry( "Weapon: ", function( ent )
 
     local wep = ent:GetActiveWeapon()
 
-    if not IsValid( ent ) then
+    if not isValid( ent ) then
         return {
             Strings = { "None" },
             Colors = { infoColors.PaleRed },
@@ -953,7 +954,7 @@ registerEntry( "Driver: ", function( ent )
 
     local driver = ent:GetDriver()
 
-    if IsValid( driver ) and driver:IsPlayer() then
+    if isValid( driver ) and driver:IsPlayer() then
         return {
             Strings = { tostring( driver ) },
             Colors = { getTeamColorTransparent( driver ) },
@@ -1084,7 +1085,7 @@ if CFCPvp then
     local function appendPvpStatus( ent, oldResult )
         local ply = ( oldResult.ExtraInfo or {} ).Player
 
-        if not IsValid( ply ) or not ply:IsPlayer() then return end
+        if not isValid( ply ) or not ply:IsPlayer() then return end
 
         local inBuild = ply:isInBuild()
 
