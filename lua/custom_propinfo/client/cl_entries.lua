@@ -16,6 +16,11 @@ local infoCommands = CustomPropInfo.Commands
 local infoBuddies = CustomPropInfo.CPPIBuddies
 local clConVarsEntries = CustomPropInfo.ClientConVarsEntries
 
+local gFPP = FPP
+local gFPP_Settings
+local fppAdminsArePrivileged
+local fppConvarDontTouchOtherPlayerProps
+
 local CVAR_BASE = "custom_propinfo_"
 local DEFAULT_TEXT = "???"
 local DEFAULT_TEXT_GAP = DEFAULT_TEXT .. " "
@@ -45,6 +50,19 @@ infoColors.Build = infoColors.Build or Color( 80, 100, 255 )
 infoColors.SolidRed = infoColors.SolidRed or Color( 255, 0, 0 )
 infoColors.SolidGreen = infoColors.SolidGreen or Color( 0, 255, 0 )
 infoColors.SolidBlue = infoColors.SolidBlue or Color( 0, 0, 255 )
+
+
+do
+    if istable( gFPP ) then
+        gFPP_Settings = gFPP and gFPP.Settings
+
+        local physgunAdminall = ( gFPP_Settings.FPP_PHYSGUN1 or {} ).adminall or 0
+        local toolgunAdminall = ( gFPP_Settings.FPP_TOOLGUN1 or {} ).adminall or 0
+
+        fppAdminsArePrivileged = physgunAdminall ~= 0 or toolgunAdminall ~= 0
+        fppConvarDontTouchOtherPlayerProps = GetConVar( "FPP_PrivateSettings_OtherPlayerProps" )
+    end
+end
 
 
 local function generateEntryConvar( name, alphaName, entry, blockToggle, default )
@@ -343,22 +361,35 @@ end
 --]]
 function CustomPropInfo.PlayerTrusts( owner, ply )
     if not IsValid( ply ) or not ply:IsPlayer() then return false end
-    if owner == ply or ply:IsSuperAdmin() then return 2 end
     if not IsValid( owner ) then return false end
+    if owner == ply then return 2 end
+
+    local isPlyAdmin = false
+
+    if ply:IsSuperAdmin() then
+        if not gFPP then -- Below is an FPP-specific check (of which isn't perfectly accurate, but there's only so much we can do from the client alone, and the FPP touchTypeReason system is lacking)
+            isPlyAdmin = true
+        elseif ply == LocalPlayer() then -- Is the client a privileged admin capable of touching owner's ent?
+            isPlyAdmin = fppAdminsArePrivileged and not fppConvarDontTouchOtherPlayerProps:GetBool()
+        else
+            isPlyAdmin = fppAdminsArePrivileged -- Note: Unable to account for ply disabling FPP force-perms in their personal settings
+        end
+    end
 
     local friends = owner.CPPIGetFriends and owner:CPPIGetFriends()
+    local adminForceOrFalse = isPlyAdmin and 2
 
     if type( friends ) ~= "table" then
         friends = infoBuddies[owner]
     end
 
-    if not friends then return false end
+    if not friends then return adminForceOrFalse end
 
     for _, friend in pairs( friends ) do
         if ply == friend then return 1 end
     end
 
-    return false
+    return adminForceOrFalse
 end
 
 
