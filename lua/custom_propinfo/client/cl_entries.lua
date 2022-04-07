@@ -1081,7 +1081,7 @@ end,
 --------------------------------------------------------------------------------
 -- Default Conditionals:
 
-if CFCPvp then
+if CFCPvp then -- Example implementation of a PvP indicator, where it appends info to the Entity, Owner, and Driver entries
     local function appendPvpStatus( ent, oldResult )
         local ply = ( oldResult.ExtraInfo or {} ).Player
 
