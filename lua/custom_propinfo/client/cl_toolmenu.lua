@@ -5,9 +5,6 @@ CustomPropInfo.Colors = CustomPropInfo.Colors or {}
 CustomPropInfo.ClientConVars = CustomPropInfo.ClientConVars or {}
 CustomPropInfo.ClientConVarsEntries = CustomPropInfo.ClientConVarsEntries or {}
 
-local convarFlags = { FCVAR_ARCHIVE, FCVAR_REPLICATED }
-local infoEntries = CustomPropInfo.Entries
-local infoEntryLookup = CustomPropInfo.EntryLookup
 local clConVars = CustomPropInfo.ClientConVars
 local clConVarsEntries = CustomPropInfo.ClientConVarsEntries
 
@@ -66,9 +63,7 @@ function CustomPropInfo.GenerateCollapsibleEntryData()
     local data = {}
     local count = 0
 
-    --for name, cv in pairs( CustomPropInfo.ClientConVarsEntries ) do
     for i, entry in ipairs( CustomPropInfo.Entries ) do
-        local name = entry.Name
         local alphaName = entry.AlphaName
         local settings = entry.Settings or {}
 

@@ -2,7 +2,6 @@ CustomPropInfo = CustomPropInfo or {}
 CustomPropInfo.Entries = CustomPropInfo.Entries or {}
 CustomPropInfo.Colors = CustomPropInfo.Colors or {}
 CustomPropInfo.DisplayData = CustomPropInfo.DisplayData or {}
-CustomPropInfo.RequestCache = CustomPropInfo.RequestCache or {}
 CustomPropInfo.Commands = CustomPropInfo.Commands or {}
 CustomPropInfo.ClientConVars = CustomPropInfo.ClientConVars or {}
 CustomPropInfo.ClientConVarsEntries = CustomPropInfo.ClientConVarsEntries or {}
@@ -13,7 +12,6 @@ CustomPropInfo.ServerExists = false
 local infoEntries = CustomPropInfo.Entries
 local infoColors = CustomPropInfo.Colors
 local infoDisplayData = CustomPropInfo.DisplayData
-local infoRequestCache = CustomPropInfo.RequestCache
 local infoCommands = CustomPropInfo.Commands
 local infoBuddies = CustomPropInfo.CPPIBuddies
 local clConVars = CustomPropInfo.ClientConVars
@@ -116,7 +114,7 @@ do
     -- I would generalize this so players can set their own font, but CreateFont looks for font names, not font file names
     --   and GMod doesn't have any tools for finding valid fonts, meaning I'd have to file.Read a ton of stuff which is absurd
     if not file.Exists( "resource/fonts/RobotoMono.ttf", "MOD" ) then
-        local files, folders = file.Find( "resource/fonts/*", "THIRDPARTY" )
+        local files = file.Find( "resource/fonts/*", "THIRDPARTY" )
         local robotoExists = false
 
         for _, v in ipairs( files ) do
@@ -334,7 +332,7 @@ hook.Add( "HUDPaint", "CustomPropInfo_DisplayInfo", function()
     if count == 0 then return end
 
     ---- set some surface properties, such as text font
-    
+
     local x = displayPosX
     local y = displayPosY
     local bgWidth = displayWidth or 0

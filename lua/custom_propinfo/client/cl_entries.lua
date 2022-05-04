@@ -24,7 +24,6 @@ local isValid = IsValid
 
 local CVAR_BASE = "custom_propinfo_"
 local DEFAULT_TEXT = "???"
-local DEFAULT_TEXT_GAP = DEFAULT_TEXT .. " "
 local DEFAULT_COLOR = Color( 255, 255, 255, 255 )
 local BASIC_REQUEST_COOLDOWN = 0.5
 
@@ -93,7 +92,7 @@ local function generateEntryConvar( name, alphaName, entry, blockToggle, default
 
     local togglesPanel = CustomPropInfo.TogglesPanel
 
-    if togglesPanel and togglesPanel:Valid() then
+    if isValid( togglesPanel ) then
         togglesPanel:Remove()
 
         timer.simple( 0.1, function()
@@ -430,12 +429,13 @@ function CustomPropInfo.AppendInfoEntry( name, func )
 
         if result == nil then return oldResult end
 
-        if type( result ) == "table" then
+        if rType == "table" then
             local appendStrings = result.Strings or result[1]
             local appendColors = result.Colors or result[2] or result2
+            local appendColorsType = type( appendColors )
             local count = result.Count or #appendStrings
 
-            appendColors = type( appendColors ) == "table" and appendColors or ( type( appendColors ) == "Color" and { appendColors } ) or {}
+            appendColors = appendColorsType == "table" and appendColors or ( appendColorsType == "Color" and { appendColors } ) or {}
 
             local oldCount = oldResult.Count
             local strings = oldResult.Strings
@@ -468,7 +468,6 @@ end
 
 
 local registerEntry = CustomPropInfo.RegisterInfoEntry
-local alterEntry = CustomPropInfo.AlterInfoEntry
 local playerTrusts = CustomPropInfo.PlayerTrusts
 local getTrustColor = CustomPropInfo.GetTrustColor
 local appendInfoEntry = CustomPropInfo.AppendInfoEntry
