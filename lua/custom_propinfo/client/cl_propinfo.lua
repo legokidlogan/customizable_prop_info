@@ -631,10 +631,16 @@ end )
 
 if not CPI_FIRST_USE:GetBool() then return end
 
-local function doIntroMessage()
+hook.Add( "InitPostEntity", "CustomPropInfo_NoteFirstUse", function()
     LocalPlayer():ConCommand( CVAR_BASE .. "enabled " .. ENABLED_DEFAULT:GetString() )
     LocalPlayer():ConCommand( CVAR_BASE .. "first_use 0" )
 
+    timer.Simple( 10, function() -- Just in case
+        LocalPlayer():ConCommand( CVAR_BASE .. "enabled " .. ENABLED_DEFAULT:GetString() )
+    end )
+end )
+
+local function doIntroMessage()
     if not WELCOME_ENABLED:GetBool() then
         hook.Remove( "StartChat", "CustomPropInfo_IntroMessage" )
         hook.Remove( "KeyPress", "CustomPropInfo_IntroMessage" )
@@ -669,7 +675,7 @@ end
 hook.Add( "StartChat", "CustomPropInfo_IntroMessage", doIntroMessage )
 
 hook.Add( "KeyPress", "CustomPropInfo_IntroMessage", function( ply, key )
-    if not ply == LocalPlayer() or key ~= IN_FORWARD then return end
+    if key ~= IN_FORWARD then return end
 
     doIntroMessage()
 end )
