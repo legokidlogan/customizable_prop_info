@@ -57,8 +57,11 @@ Client:
 - `CustomPropInfo.RegisterInfoEntry( name, func, settings )`
   - Adds a new info type to the prop info list.
   - `name` - Name of info entry to add to the list.
-  - `func` - A `function( ent )` that returns `nil` to not display the entry, or returns `{ LIST_OF_STRINGS, LIST_OF_COLORS, OPTIONAL_EXTRA_INFO }`
-    - The resulting table will be wrapped into a different format, listed further below.
+  - `func` - A `function( ent, oldResult, fromChat, ... )` that returns `nil` to not display the entry, or returns `{ LIST_OF_STRINGS, LIST_OF_COLORS, OPTIONAL_EXTRA_INFO }`
+    - `oldResult` - This will ALWAYS be `nil` for this function, as it is simply here to preserve the argument structure later created by `CustomPropInfo.AlterInfoEntry()`
+    - `fromChat` - true if called from a chat command, false otherwise.
+    - `...` - Variable string arguments, only when called from a chat command. Unsurprisingly, allows for player-provided arguments in chat commands.
+    - The resulting table given by `func` will automatically be wrapped into a special format, listed further below.
   - `settings` - A table containing the following parameters:
     - `CallNames = TABLE` - A list of strings which will be used to call the function via chat command for printing out to chat, taking the standard return format.
       - Only the first in the list will be displayed in the help command.
@@ -76,18 +79,18 @@ Client:
   - Unless `CanCallWithoutEnt` is true, you do not need to check for `IsValid( ent )`, as prop info is only acquired on valid entities. This also means that it will never acquire info on the world.
 - `CustomPropInfo.AlterInfoEntry( name, func )`
   - Wraps a pre-existing info entry to append, remove, or otherwise modify its output.
-  - Behaves similarly to `CustomPropInfo.RegisterInfoEntry()`, except the arguments to `func` are `function( ent, oldResult )`
+  - Behaves similarly to `CustomPropInfo.RegisterInfoEntry()`, except the `oldResult` argument in `func( ent, oldResult, fromChat, ... )` will be used, providing the result of the previous entry call.
     - `oldResult` is in the wrapped format described above. If the original result is `nil`, it'll be replaced with a formatted table with `Count = 0`.
-  - This is capable of wrapping for several layers. If you want to forcefully cut out some pre-existing wraps, `CustomPropInfo.Entries[INDEX].FuncOriginal` gives the base-level function.
+  - This is capable of wrapping for several layers. If you want to forcefully cut out some pre-existing wraps, `CustomPropInfo.Entries[INDEX].FuncOriginal` gives the original, base-level function.
     - The index of an entry can be obtained with `CustomPropInfo.EntryLookup[entryName]`
+    - Keep in mind that the base-level function always has its `oldResult` argument as `nil`, while all subsequent layers will have a proper table given to them.
     - If one of the older functions in the chain returns a result containing `ExtraInfo`, you can access it with `oldResult.ExtraInfo`
-  - `ply` - Only required on server.
 - `CustomPropInfo.AppendInfoEntry( name, func )`
   - Uses `CustomPropInfo.AlterInfoEntry()` to append data to the end of the current entry result.
   - Preferred return format for `func` is `nil` OR `{ Count = LIST_LENGTH, Strings = LIST_OF_STRINGS, Colors = LIST_OF_COLORS }`
   - Other accepted return formats:
     - `{ LIST_OF_STRINGS, LIST_OF_COLORS }`
-    - `{ LIST_OF_STRINGS }, { LIST_OF_COLORS }`
+    - `LIST_OF_STRINGS, LIST_OF_COLORS`
     - `STRING, COLOR`
     - `STRING`
 - `CustomPropInfo.RequestServerInfo( ent, entryName, uniqueID, clCooldown )`

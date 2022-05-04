@@ -139,6 +139,8 @@ local mathMax = math.max
 
 local stringSub = string.sub
 
+local tableRemove = table.remove
+
 function CustomPropInfo.MakeOpaque( color )
     return Color( color.r, color.g, color.b, 255 )
 end
@@ -455,7 +457,7 @@ function CustomPropInfo.GetPropInfo( ent )
 
         if entry.Enabled and not entry.Settings.NoShow then
             local result = entry.Func or entry.FuncOriginal or DEFAULT_FUNC
-            result = result( ent ) or {}
+            result = result( ent, nil, false ) or {}
 
             local resultCount = result.Count or 0
 
@@ -522,7 +524,10 @@ net.Receive( "CustomPropInfo_RunCommand", function()
         return
     end
 
-    local result = entry.Func( ent ) or {}
+    tableRemove( args, 1 )
+    tableRemove( args, 2 )
+
+    local result = entry.Func( ent, nil, true, unpack( args ) ) or {}
     local count = result.Count or 0
 
     if count < 1 then

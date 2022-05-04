@@ -45,6 +45,7 @@ infoColors.SoftOrange = infoColors.SoftOrange or Color( 255, 190, 100 )
 infoColors.PaleRed = infoColors.PaleRed or Color( 255, 200, 187 )
 infoColors.PvP = infoColors.PvP or Color( 255, 80, 80 )
 infoColors.Build = infoColors.Build or Color( 80, 100, 255 )
+infoColors.InfoBlue = infoColors.InfoBlue or Color( 50, 150, 200 )
 
 -- The Background color and any color with a name starting with "Solid" will not have their alpha modified by the custom_propinfo_text_alpha convar
 infoColors.SolidRed = infoColors.SolidRed or Color( 255, 0, 0 )
@@ -115,7 +116,7 @@ end
 
     inputs:
         name: Name of info entry to add to the list.
-        func: A function( ent ) which either returns nil to not display the entry, or returns { LIST_OF_STRINGS, LIST_OF_COLORS, OPTIONAL_EXTRA_INFO }, or returns a table with the format below
+        func: A function( ent, nil, fromChat, varChatArgs... ) which either returns nil to not display the entry, or returns { LIST_OF_STRINGS, LIST_OF_COLORS, OPTIONAL_EXTRA_INFO }, or returns a table with the format below
         settings: {
             CallNames = TABLE, -- A list of strings which will be used to call the function via chat command for printing out to chat, taking the standard return format. Only the first in the list will be displayed in the help command.
             OptionText = STRING, -- A short string to attach to the toggle checkbox in the option menu for this entry, like a mini-description.
@@ -173,8 +174,8 @@ function CustomPropInfo.RegisterInfoEntry( name, func, settings )
     local entry = {
         Name = name,
         FuncOriginal = func,
-        Func = function( ent )
-            local result = func( ent )
+        Func = function( ent, nilArg, fromChat, ... )
+            local result = func( ent, nilArg, fromChat, ... )
 
             if result == nil then return end
 
@@ -220,7 +221,7 @@ end
 --[[
     Wraps a pre-existing info entry to append, remove, or otherwise modify its output.
         e.g. Append a build/pvp status marker to a player's/ent owner's name for servers with a build/pvp system.
-    Behaves similarly to CustomPropInfo.RegisterInfoEntry(), except the arguments to func are function( ent, oldResult ),
+    Behaves similarly to CustomPropInfo.RegisterInfoEntry(), except the arguments to func are function( ent, oldResult, fromChat, varChatArgs... ),
         where oldResult is in the wrapped format described above. If the original result is nil, it'll be replaced with a formatted table with Count = 0.
 
     This is capable of wrapping for several layers. If you want to forcefully cut out some pre-existing wraps, CustomPropInfo.Entries[INDEX].FuncOriginal gives the base-level function.
@@ -251,14 +252,14 @@ function CustomPropInfo.AlterInfoEntry( name, func )
     local entry = infoEntries[ind]
     local prevFunc = entry.Func
 
-    entry.Func = function( ent )
-        local oldResult = prevFunc( ent ) or {
+    entry.Func = function( ent, olderResult, fromChat, ... )
+        local oldResult = prevFunc( ent, olderResult, fromChat, ... ) or {
             Count = 0,
             Strings = {},
             Colors = {},
         }
 
-        local result = func( ent, oldResult )
+        local result = func( ent, oldResult, fromChat, ... )
 
         if result == nil then return end
 
@@ -416,15 +417,15 @@ end
         preferred return format: nil OR { Count = LIST_LENGTH, Strings = LIST_OF_STRINGS, Colors = LIST_OF_COLORS }
         other accepted return formats:
             { LIST_OF_STRINGS, LIST_OF_COLORS }
-            { LIST_OF_STRINGS }, { LIST_OF_COLORS }
+            LIST_OF_STRINGS, LIST_OF_COLORS
             STRING, COLOR
             STRING
 --]]
 function CustomPropInfo.AppendInfoEntry( name, func )
     func = type( func ) == "function" and func or function() end
 
-    CustomPropInfo.AlterInfoEntry( name, function( ent, oldResult )
-        local result, result2 = func( ent, oldResult )
+    CustomPropInfo.AlterInfoEntry( name, function( ent, oldResult, fromChat, ... )
+        local result, result2 = func( ent, oldResult, fromChat, ... )
         local rType = type( result )
 
         if result == nil then return oldResult end
@@ -474,6 +475,8 @@ local appendInfoEntry = CustomPropInfo.AppendInfoEntry
 
 local mathRound = math.Round
 local mathClamp = math.Clamp
+
+local stringFormat = string.format
 
 local roundAmount = GetConVar( CVAR_BASE .. "round" ):GetInt() or 3
 local displayTextAlpha = GetConVar( CVAR_BASE .. "text_alpha" ):GetFloat() or 255
@@ -660,8 +663,57 @@ end,
 } )
 
 
-registerEntry( "Material: ", function( ent )
-    local mat = ent:GetMaterial() or ""
+registerEntry( "Material: ", function( ent, _, fromChat )
+    if fromChat then
+        local mainMat = ent:GetMaterial()
+        local baseMats = ent:GetMaterials()
+        local matCount = #baseMats
+
+        mainMat = mainMat ~= "" and mainMat or baseMats[1]
+
+        if matCount < 2 then
+            return mainMat
+        end
+
+        local yellow = infoColors.Yellow
+        local softYellow = infoColors.SoftYellow
+        local infoBlue = infoColors.InfoBlue
+        local strings = {
+            mainMat,
+            " and ",
+            tostring( matCount ),
+            " sub-materials:\n",
+        }
+        local colors = {
+            infoColors.SoftOrange,
+            infoColors.Text,
+            yellow,
+            infoColors.Text,
+        }
+        local stringCount = 4
+
+        for i = 1, matCount do
+            local subMat = ent:GetSubMaterial( i - 1 )
+            local hasSubMat = subMat ~= ""
+
+            local matEff = hasSubMat and subMat or baseMats[i]
+
+            stringCount = stringCount + 1
+            strings[stringCount] = stringFormat( "  SubMat %2d. ", i - 1 )
+            colors[stringCount] = infoBlue
+
+            stringCount = stringCount + 1
+            strings[stringCount] = i == matCount and matEff or ( matEff .. "\n" )
+            colors[stringCount] = hasSubMat and yellow or softYellow
+        end
+
+        return {
+            Strings = strings,
+            Colors = colors,
+        }
+    end
+
+    local mat = ent:GetMaterial()
 
     return mat ~= "" and mat or ent:GetMaterials()[1]
 end,
