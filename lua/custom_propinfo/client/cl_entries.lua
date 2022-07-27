@@ -1138,7 +1138,7 @@ if CFCPvp then -- Example implementation of a PvP indicator, where it appends in
 
         if not isValid( ply ) or not ply:IsPlayer() then return end
 
-        local inBuild = ply:isInBuild()
+        local inBuild = ply:IsInBuild()
 
         return {
             Strings = {
