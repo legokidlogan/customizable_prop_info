@@ -1,5 +1,6 @@
 # customizable_prop_info
-Prop Info for Garry's Mod
+Prop Info for Garry's Mod \
+[Click here for the Workshop version](https://steamcommunity.com/sharedfiles/filedetails/?id=2760295134)
 
 Highly customizable for both the client and the server. \
 Custom info entries can be made and pre-existing ones can be modified. \
