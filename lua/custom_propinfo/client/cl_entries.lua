@@ -652,6 +652,17 @@ end,
 } )
 
 
+registerEntry( "Creation Time: ", function( ent )
+    return tostring( mathRound( ent:GetCreationTime(), roundAmount ) )
+end,
+{
+    CallNames = { "creationtime", "ctime" },
+    NoShow = false,
+    DefaultEnable = true,
+    BlockToggle = false,
+} )
+
+
 registerEntry( "Model: ", function( ent )
     return tostring( ent:GetModel() )
 end,
