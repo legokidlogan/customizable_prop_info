@@ -162,7 +162,7 @@ net.Receive( "CustomPropInfo_RequestInfo", function( _, ply )
 
     coolTimes[ply] = curTime + ( cooldown or response.Cooldown or REQUEST_COOLDOWN:GetFloat() or 0.3 )
 
-    net.Start( "CustomPropInfo_RequestResponse" )
+    net.Start( "CustomPropInfo_RequestResponse", true )
     net.WriteString( entryName )
     net.WriteString( uniqueID )
     net.WriteTable( result or {} )

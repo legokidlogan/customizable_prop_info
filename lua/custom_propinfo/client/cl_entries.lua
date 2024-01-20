@@ -335,7 +335,7 @@ function CustomPropInfo.RequestServerInfo( ent, entryName, uniqueID, clCooldown 
     local curTime = SysTime()
 
     if not coolTime or curTime > coolTime then
-        net.Start( "CustomPropInfo_RequestInfo" )
+        net.Start( "CustomPropInfo_RequestInfo", true )
         net.WriteEntity( isValid( ent ) and ent or NULL )
         net.WriteString( entryName )
         net.WriteString( uniqueID )
