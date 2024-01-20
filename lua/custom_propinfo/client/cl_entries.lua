@@ -79,7 +79,7 @@ local function generateEntryConvar( name, alphaName, entry, blockToggle, default
         entry.Enabled = default
     end
 
-    cvars.AddChangeCallback( cvName, function( _, old, new )
+    cvars.AddChangeCallback( cvName, function( _, _, new )
         local state = ( tonumber( new ) or 0 ) ~= 0
 
         if blockToggle and default ~= state then
@@ -509,7 +509,7 @@ local function convertFloatColor( color )
 end
 
 
-cvars.AddChangeCallback( CVAR_BASE .. "round", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "round", function( _, _, new )
     new = tonumber( new ) or 3
     roundAmount = math.Clamp( math.floor( new ), 0, 10 )
 
@@ -518,16 +518,16 @@ cvars.AddChangeCallback( CVAR_BASE .. "round", function( _, old, new )
     end
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "text_alpha", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "text_alpha", function( _, _, new )
     displayTextAlpha = mathClamp( tonumber( new ) or 255, 0, 255 )
     DEFAULT_COLOR.a = displayTextAlpha
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "flag_frozen", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "flag_frozen", function( _, _, new )
     flagFrozen = ( tonumber( new ) or 0 ) ~= 0
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "flag_collisions", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "flag_collisions", function( _, _, new )
     flagCollisions = ( tonumber( new ) or 0 ) ~= 0
 end )
 
@@ -1042,7 +1042,7 @@ end,
 --------------------------------------------------------------------------------
 -- Default NoShow Commands:
 
-registerEntry( "--Help", function( ent )
+registerEntry( "--Help", function( _ent )
     local entryCount = infoEntries[0] or 0
     local count = 0
     local strings = {}
@@ -1090,7 +1090,7 @@ end,
 } )
 
 
-registerEntry( "--Directions", function( ent )
+registerEntry( "--Directions", function( _ent )
     local newState = GetConVar( CVAR_BASE .. "directions" ):GetInt() == 0
 
     LocalPlayer():ConCommand( CVAR_BASE .. "directions " .. ( newState and "1" or "0" ) )
@@ -1114,7 +1114,7 @@ end,
     CanCallWithoutEnt = true,
 } )
 
-registerEntry( "--DirectionsMode", function( ent )
+registerEntry( "--DirectionsMode", function( _ent )
     local newState = GetConVar( CVAR_BASE .. "directions_mode" ):GetInt() == 0
 
     LocalPlayer():ConCommand( CVAR_BASE .. "directions_mode " .. ( newState and "1" or "0" ) )
@@ -1144,7 +1144,7 @@ end,
 -- Default Conditionals:
 
 if CFCPvp then -- Example implementation of a PvP indicator, where it appends info to the Entity, Owner, and Driver entries
-    local function appendPvpStatus( ent, oldResult )
+    local function appendPvpStatus( _ent, oldResult )
         local ply = ( oldResult.ExtraInfo or {} ).Player
 
         if not isValid( ply ) or not ply:IsPlayer() then return end

@@ -34,13 +34,13 @@ end
 if commandPrefix then
     commandPrefix = commandPrefix:GetString()
 
-    cvars.AddChangeCallback( CVAR_BASE .. "command_prefix", function( _, old, new )
+    cvars.AddChangeCallback( CVAR_BASE .. "command_prefix", function( _, _, new )
         commandPrefix = new
         setInfoPanelCmdText()
     end )
 else
     timer.Simple( 10, function()
-        cvars.AddChangeCallback( CVAR_BASE .. "command_prefix", function( _, old, new )
+        cvars.AddChangeCallback( CVAR_BASE .. "command_prefix", function( _, _, new )
             commandPrefix = new
             setInfoPanelCmdText()
         end )
@@ -63,7 +63,7 @@ function CustomPropInfo.GenerateCollapsibleEntryData()
     local data = {}
     local count = 0
 
-    for i, entry in ipairs( CustomPropInfo.Entries ) do
+    for _, entry in ipairs( CustomPropInfo.Entries ) do
         local alphaName = entry.AlphaName
         local settings = entry.Settings or {}
 

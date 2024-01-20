@@ -204,7 +204,7 @@ local setBackgroundAlpha = CustomPropInfo.SetBackgroundAlpha
 local setTextAlpha = CustomPropInfo.SetTextAlpha
 
 
-cvars.AddChangeCallback( CVAR_BASE .. "enabled", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "enabled", function( _, _, new )
     cpiEnabled = ( tonumber( new ) or 0 ) ~= 0
 
     if not cpiEnabled then
@@ -212,54 +212,54 @@ cvars.AddChangeCallback( CVAR_BASE .. "enabled", function( _, old, new )
     end
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "directions", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "directions", function( _, _, new )
     cpiDirEnabled = ( tonumber( new ) or 0 ) ~= 0
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "directions_mode", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "directions_mode", function( _, _, new )
     cpiDirMode = ( tonumber( new ) or 0 ) ~= 0
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "tool_only", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "tool_only", function( _, _, new )
     cpiToolOnly = ( tonumber( new ) or 0 ) ~= 0
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "hide_seat", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "hide_seat", function( _, _, new )
     cpiHideSeat = ( tonumber( new ) or 0 ) ~= 0
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "directions_length", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "directions_length", function( _, _, new )
     cpiDirLength = tonumber( new ) or 0
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "directions_length_end", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "directions_length_end", function( _, _, new )
     cpiDirLengthEnd = tonumber( new ) or 0
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "outline", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "outline", function( _, _, new )
     displayOutline = ( tonumber( new ) or 0 ) ~= 0
 
     FONT_DATA.outline = displayOutline
     surface.CreateFont( FONT_NAME, FONT_DATA )
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "background_value", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "background_value", function( _, _, new )
     setBackgroundValue( mathClamp( tonumber( new ) or 50, 0, 255 ) )
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "background_alpha", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "background_alpha", function( _, _, new )
     setBackgroundAlpha( mathClamp( tonumber( new ) or 50, 0, 255 ) )
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "text_alpha", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "text_alpha", function( _, _, new )
     setTextAlpha( mathClamp( tonumber( new ) or 255, 0, 255 ) )
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "pos_x", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "pos_x", function( _, _, new )
     displayPosX = mathClamp( tonumber( new ) or 0, 0, 1 ) * ScrW()
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "pos_y", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "pos_y", function( _, _, new )
     displayPosY = mathClamp( tonumber( new ) or 0.51, 0, 1 ) * ScrH()
 end )
 
@@ -292,7 +292,7 @@ cvars.AddChangeCallback( CVAR_BASE .. "min_width", function( _, old, new )
     displayMinWidth = displayFontSize * newVal
 end )
 
-cvars.AddChangeCallback( CVAR_BASE .. "command_prefix", function( _, old, new )
+cvars.AddChangeCallback( CVAR_BASE .. "command_prefix", function( _, _, new )
     local noSpaces = string.sub( string.match( new, "^[%S]+" ) or "", 1, COMMAND_PREFIX_MAX_LENGTH )
 
     if noSpaces == "" then
@@ -390,7 +390,7 @@ end )
 
 local renderDrawLine = render.DrawLine
 
-hook.Add( "PostDrawOpaqueRenderables", "CustomPropInfo_DirectionalArrows", function( depth, skybox2, skybox3 )
+hook.Add( "PostDrawOpaqueRenderables", "CustomPropInfo_DirectionalArrows", function( _depth, skybox2, skybox3 )
     if skybox2 or skybox3 then return end
     if not cpiDirEnabled then return end
     if not IsValid( cpiEntity ) then return end
@@ -677,7 +677,7 @@ end
 
 hook.Add( "StartChat", "CustomPropInfo_IntroMessage", doIntroMessage )
 
-hook.Add( "KeyPress", "CustomPropInfo_IntroMessage", function( ply, key )
+hook.Add( "KeyPress", "CustomPropInfo_IntroMessage", function( _ply, key )
     if key ~= IN_FORWARD then return end
 
     doIntroMessage()
