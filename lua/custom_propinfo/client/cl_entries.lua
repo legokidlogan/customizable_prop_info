@@ -1013,6 +1013,7 @@ end,
 
 registerEntry( "Driver: ", function( ent )
     if not ent:IsVehicle() then return end
+    if not ent.GetDriver then return end -- Some horrible addons (e.g. SCars) implement :IsVehicle() but not :GetDriver()
 
     local driver = ent:GetDriver()
 
