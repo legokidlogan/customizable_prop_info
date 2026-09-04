@@ -159,7 +159,7 @@ hook.Add( "PopulateToolMenu", "CustomPropInfo_PopulateToolMenu", function()
                 defaults[cvName] = cv:GetDefault()
             end
 
-            defaults[CVAR_BASE .. "enabled"] = 1
+            defaults[CVAR_BASE .. "enabled"] = "1"
 
             for _, cv in pairs( clConVarsEntries ) do
                 local cvName = cv:GetName()
