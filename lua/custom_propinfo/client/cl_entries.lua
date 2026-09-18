@@ -1039,6 +1039,32 @@ end,
 } )
 
 
+registerEntry( "NPC Health: ", function( ent )
+    -- Only show for NPCs and NextBots since player health would be clutter, and other ents can have arbitrary systems.
+    if not ent:IsNPC() and not ent:IsNextBot() then return end
+
+    local health = ent:Health()
+    local maxHealth = ent:GetMaxHealth()
+    local percent = 100
+
+    if maxHealth > 0 then
+        percent = mathRound( 100 * health / maxHealth ) -- Round to whole, regardless of roundAmount
+    end
+
+    return {
+        Strings = { tostring( health ), " / ", tostring( maxHealth ), " (", percent .. "%", ")" },
+        Colors = { infoColors.Red, infoColors.Text, infoColors.PaleRed, infoColors.Text, infoColors.Red, infoColors.Text },
+    }
+end,
+{
+    CallNames = {},
+    OptionText = "Only on NPCs/NextBots",
+    NoShow = false,
+    DefaultEnable = true,
+    BlockToggle = false,
+} )
+
+
 
 --------------------------------------------------------------------------------
 -- Default NoShow Commands:
